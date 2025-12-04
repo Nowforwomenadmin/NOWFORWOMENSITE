@@ -7,6 +7,23 @@ import { CheckCircle2, Circle, AlertCircle, Calendar, Users, Target, TrendingUp,
 export default function NOWOperationalRoadmap() {
   const [selectedPhase, setSelectedPhase] = useState('phase1');
 
+  // Simple color map to convert Tailwind-like class to hex (used safely in inline style)
+  const colorMap: Record<string, string> = {
+    'bg-blue-500': '#3b82f6',
+    'bg-purple-500': '#8b5cf6',
+    'bg-green-500': '#10b981',
+    'bg-orange-500': '#fb923c',
+    'bg-pink-500': '#ec4899',
+    'bg-indigo-500': '#6366f1',
+    'bg-blue-100': '#dbeafe',
+    'bg-green-100': '#d1fae5',
+    'bg-purple-100': '#f3e8ff',
+    'bg-orange-100': '#fff7ed',
+    'bg-gray-100': '#f3f4f6',
+    'bg-amber-50': '#fffbeb',
+    // add more mappings if needed
+  };
+
   // Team Structure Data
   const teamMembers = [
     {
@@ -247,7 +264,7 @@ export default function NOWOperationalRoadmap() {
     { phase: 'Phase 4 (June 30)', customers: '50-75 paying', mrr: '€1,950-2,925', retention: '60%+ (M6)', cac: '<€30' }
   ];
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
         return <CheckCircle2 className="w-4 h-4 text-green-600" />;
@@ -260,7 +277,7 @@ export default function NOWOperationalRoadmap() {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
         return 'bg-green-100 text-green-800 border-green-300';
@@ -591,7 +608,12 @@ export default function NOWOperationalRoadmap() {
           <TabsContent value="timeline" className="space-y-6">
             <div className="space-y-6">
               {phases.map((phase, idx) => (
-                <Card key={phase.id} className="border-l-4" style={{ borderLeftColor: phase.color.replace('bg-', 'var(--') + ')' }}>
+                <Card
+                  key={phase.id}
+                  className="border-l-4"
+                  // apply inline border color safely via lookup
+                  style={{ borderLeftColor: colorMap[phase.color] || '#e5e7eb' }}
+                >
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -614,8 +636,8 @@ export default function NOWOperationalRoadmap() {
                       <div>
                         <h4 className="font-semibold text-sm text-gray-700 mb-3">Key Deliverables</h4>
                         <div className="grid md:grid-cols-2 gap-2">
-                          {phase.deliverables.map((deliverable, idx) => (
-                            <div key={idx} className={`p-3 rounded-lg border text-sm ${getStatusColor(deliverable.status)}`}>
+                          {phase.deliverables.map((deliverable, didx) => (
+                            <div key={didx} className={`p-3 rounded-lg border text-sm ${getStatusColor(deliverable.status)}`}>
                               <div className="flex items-start gap-2">
                                 {getStatusIcon(deliverable.status)}
                                 <div className="flex-1 min-w-0">
@@ -632,8 +654,8 @@ export default function NOWOperationalRoadmap() {
                       <div>
                         <h4 className="font-semibold text-sm text-gray-700 mb-3">Success Metrics</h4>
                         <div className="grid md:grid-cols-3 gap-3">
-                          {phase.metrics.map((metric, idx) => (
-                            <div key={idx} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                          {phase.metrics.map((metric, midx) => (
+                            <div key={midx} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
                               <div className="text-xs text-gray-600 mb-1">{metric.label}</div>
                               <div className="flex items-baseline gap-2">
                                 <div className="font-bold text-lg text-gray-900">{metric.target}</div>
@@ -674,8 +696,8 @@ export default function NOWOperationalRoadmap() {
                             .filter(d => d.owner.includes(ws.owner) || 
                                        (ws.owner === 'Natalia' && (d.owner.includes('Team') || d.owner.includes('Natalia'))) ||
                                        (ws.owner === 'Genia' && (d.owner.includes('Genia') || d.owner.includes('Team'))))
-                            .map((deliverable, idx) => (
-                              <div key={`${phase.id}-${idx}`} className={`p-3 rounded-lg border text-sm ${getStatusColor(deliverable.status)}`}>
+                            .map((deliverable, didx) => (
+                              <div key={`${phase.id}-${didx}`} className={`p-3 rounded-lg border text-sm ${getStatusColor(deliverable.status)}`}>
                                 <div className="flex items-start justify-between gap-2">
                                   <div className="flex items-start gap-2 flex-1">
                                     {getStatusIcon(deliverable.status)}
@@ -829,10 +851,10 @@ export default function NOWOperationalRoadmap() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b-2 border-gray-300">
-                        <th className="text-left p-3 font-semibold text-gray-700">KPI</th>
-                        <th className="text-center p-3 font-semibold text-gray-700">NOW Target</th>
-                        <th className="text-center p-3 font-semibold text-gray-700">Industry Benchmark</th>
-                        <th className="text-center p-3 font-semibold text-gray-700">Status</th>
+                        <th className="text-left p-3 font-semibold text-sm text-gray-700">KPI</th>
+                        <th className="text-center p-3 font-semibold text-sm text-gray-700">NOW Target</th>
+                        <th className="text-center p-3 font-semibold text-sm text-gray-700">Industry Benchmark</th>
+                        <th className="text-center p-3 font-semibold text-sm text-gray-700">Status</th>
                       </tr>
                     </thead>
                     <tbody>
